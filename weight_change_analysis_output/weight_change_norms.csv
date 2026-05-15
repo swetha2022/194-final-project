@@ -1,0 +1,13 @@
+pretrain_optimizer,run_folder,run_path,finetune_type,finetune_optimizer,name_suffix,checkpoint_step,shared_tensor_keys,shared_parameter_count,l_inf,l2,rms_rms_induced_max_over_layers
+adam,adam_ckpt_driving_adamw,/scratch/celine/ft_out/adam_ckpt_driving_adamw,lora,adamw,,2000,5317,15960110208,0.1134033203125,71.39559684726682,28.165260314941406
+adam,adam_ckpt_driving_fullft_adamw,/scratch/celine/ft_out/adam_ckpt_driving_fullft_adamw,full,adamw,,2000,5317,15960110208,0.093505859375,333.86892378142403,4.978362112636137
+adam,adam_ckpt_driving_fullft_muon,/scratch/celine/ft_out/adam_ckpt_driving_fullft_muon,full,muon,,400,5317,15960110208,0.6953125,221.12436432369665,1.8542174486723684
+adam,adam_ckpt_driving_muon,/scratch/celine/ft_out/adam_ckpt_driving_muon,lora,muon,,2000,5317,15960110208,0.232177734375,53.21599081175678,2.9018415419386567
+muon,muon_ckpt_driving_adamw,/scratch/celine/ft_out/muon_ckpt_driving_adamw,lora,adamw,,2000,5317,15960110208,0.12109375,73.16294811986681,32.86059817424653
+muon,muon_ckpt_driving_fullft_adamw,/scratch/celine/ft_out/muon_ckpt_driving_fullft_adamw,full,adamw,,400,5317,15960110208,0.05133056640625,216.56549025488022,5.14305614834159
+muon,muon_ckpt_driving_fullft_adamw_4-28,/scratch/celine/ft_out/muon_ckpt_driving_fullft_adamw_4-28,full,adamw,4-28,2000,5317,15960110208,0.015625,47.17861997696624,1.236297417730131
+muon,muon_ckpt_driving_fullft_adamw_swa_4-28,/scratch/celine/ft_out/muon_ckpt_driving_fullft_adamw_swa_4-28,full,adamw,swa_4-28,1000,5317,15960110208,0.015625,17.8109410432643,0.19636166145007317
+muon,muon_ckpt_driving_fullft_muon,/scratch/celine/ft_out/muon_ckpt_driving_fullft_muon,full,muon,,400,5317,15960110208,0.564453125,205.64590405342844,1.7990944730467666
+muon,muon_ckpt_driving_fullft_muon_4-28,/scratch/celine/ft_out/muon_ckpt_driving_fullft_muon_4-28,full,muon,4-28,2000,5317,15960110208,0.775390625,296.03949093560493,2.1807619099645366
+muon,muon_ckpt_driving_fullft_muon_swa_4-28,/scratch/celine/ft_out/muon_ckpt_driving_fullft_muon_swa_4-28,full,muon,swa_4-28,1000,5317,15960110208,0.775390625,246.05121592285542,1.8035790034289563
+muon,muon_ckpt_driving_muon,/scratch/celine/ft_out/muon_ckpt_driving_muon,lora,muon,,2000,5317,15960110208,0.26171875,55.3233971564723,3.8033688295936514

@@ -1,0 +1,5 @@
+torch>=2.0
+safetensors>=0.4
+tqdm>=4.0
+matplotlib>=3.7
+numpy>=1.22

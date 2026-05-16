@@ -1,0 +1,85 @@
+{
+    "triviaqa": {
+        "name": "triviaqa",
+        "alias": "triviaqa",
+        "sample_len": 17944,
+        "exact_match,remove_whitespace": 0.4905818100757913,
+        "exact_match_stderr,remove_whitespace": 0.003732032492792077
+    },
+    "humaneval": {
+        "name": "humaneval",
+        "alias": "humaneval",
+        "sample_len": 164,
+        "pass@1,create_test": 0.29878048780487804,
+        "pass@1_stderr,create_test": 0.03585166336909662
+    },
+    "mbpp": {
+        "name": "mbpp",
+        "alias": "mbpp",
+        "sample_len": 500,
+        "pass_at_1,none": 0.374,
+        "pass_at_1_stderr,none": 0.021660710347204484
+    },
+    "gsm8k": {
+        "name": "gsm8k",
+        "alias": "gsm8k",
+        "sample_len": 1319,
+        "exact_match,strict-match": 0.3570887035633055,
+        "exact_match_stderr,strict-match": 0.013197931775445206,
+        "exact_match,flexible-extract": 0.35860500379075055,
+        "exact_match_stderr,flexible-extract": 0.01321031736413403
+    },
+    "mmlu": {
+        "alias": "mmlu",
+        "name": "mmlu",
+        "sample_len": 14042,
+        "acc,none": 0.564093433983763,
+        "acc_stderr,none": 0.003951579989374152,
+        "sample_count": {
+            "acc,none": 14042
+        }
+    },
+    "mmlu_pro": {
+        "alias": "mmlu_pro",
+        "name": "mmlu_pro",
+        "sample_len": 12032,
+        "exact_match,custom-extract": 0.2683676861702128,
+        "exact_match_stderr,custom-extract": 0.003950570139989447,
+        "sample_count": {
+            "exact_match,custom-extract": 12032
+        }
+    },
+    "bbh": {
+        "alias": "bbh",
+        "name": "bbh",
+        "sample_len": 6511,
+        "exact_match,get-answer": 0.47381354630625094,
+        "exact_match_stderr,get-answer": 0.005474511112040813,
+        "sample_count": {
+            "exact_match,get-answer": 6511
+        }
+    },
+    "hendrycks_math": {
+        "alias": "hendrycks_math",
+        "name": "hendrycks_math",
+        "sample_len": 5000,
+        "exact_match,none": 0.0374,
+        "exact_match_stderr,none": 0.0026669758475361734,
+        "sample_count": {
+            "exact_match,none": 5000
+        }
+    },
+    "ceval-valid": {
+        "alias": "ceval-valid",
+        "name": "ceval-valid",
+        "sample_len": 1346,
+        "acc,none": 0.5260029717682021,
+        "acc_stderr,none": 0.013321967824113866,
+        "acc_norm,none": 0.5260029717682021,
+        "acc_norm_stderr,none": 0.013321967824113866,
+        "sample_count": {
+            "acc,none": 1346,
+            "acc_norm,none": 1346
+        }
+    }
+}

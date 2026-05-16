@@ -1,0 +1,125 @@
+# SFT Moonlight on OpenAI-format JSONL built from large-scale English web text
+# (allenai/c4 via scripts/prepare_webtext_openai_sft.py). Mirrors celinetan's
+# NeMo RL pattern: local train/val JSONL + dataset_name: openai_format.
+#
+# Prerequisites: 8 GPUs recommended (EP=8). From repo root:
+#   uv run python scripts/prepare_webtext_openai_sft.py --output_dir data/moonlight_c4_sft
+#   uv run examples/run_sft.py --config examples/configs/sft_moonlight_c4_webtext_openai.yaml
+#
+# Override checkpoint or data paths, e.g.:
+#   policy.model_name=/path/to/Moonlight_hf_checkpoint
+#   data.train.data_path=/path/to/train.jsonl
+#   data.validation.data_path=/path/to/val.jsonl
+
+defaults:
+  - sft.yaml
+
+sft:
+  max_num_epochs: 1
+  max_num_steps: 400
+  val_period: 100
+  val_batches: 4
+  val_global_batch_size: 32
+  val_micro_batch_size: 1
+  val_at_start: true
+  val_at_end: true
+
+checkpointing:
+  checkpoint_dir: results/sft_moonlight_c4_webtext
+  save_period: 200
+  keep_top_k: 3
+
+policy:
+  model_name: moonshotai/Moonlight-16B-A3B-Instruct
+  tokenizer:
+    name: moonshotai/Moonlight-16B-A3B-Instruct
+    chat_template: null
+    chat_template_kwargs: null
+  train_global_batch_size: 8
+  train_micro_batch_size: 1
+  max_total_sequence_length: 2048
+  precision: bfloat16
+  optimizer:
+    name: torch.optim.AdamW
+    kwargs:
+      lr: 1.0e-5
+      weight_decay: 0.01
+      betas: [0.9, 0.98]
+      eps: 1.0e-8
+      foreach: false
+      fused: false
+
+  dtensor_cfg:
+    _v2: true
+    enabled: true
+    tensor_parallel_size: 1
+    context_parallel_size: 1
+    expert_parallel_size: 8
+    sequence_parallel: false
+    activation_checkpointing: true
+    cpu_offload: false
+    # null = do not torch.cuda.empty_cache() each N microbatches (avoids perf warning).
+    clear_cache_every_n_steps: null
+    automodel_kwargs:
+      use_liger_kernel: false
+      backend:
+        _target_: nemo_automodel.components.models.common.utils.BackendConfig
+        # sdpa: PyTorch SDPA (no TE attention module).
+        # rope_fusion: false — fused RoPE uses Transformer Engine, which imports flash_attn
+        # (breaks on older glibc). Non-fused RoPE is pure torch in rope_utils.py.
+        attn: sdpa
+        linear: te
+        rms_norm: te
+        rope_fusion: false
+        # DeepEP (GroupedExpertsDeepEP) needs TE fused MoE permute or careful autograd;
+        # use torch dispatcher + GroupedExperts for stable SFT backward without full TE stack.
+        enable_deepep: false
+        fake_balanced_gate: false
+        enable_hf_state_dict_adapter: true
+        enable_fsdp_optimizations: false
+        gate_precision: float64
+
+    # Full-parameter SFT (no adapters); much heavier VRAM than LoRA.
+    lora_cfg:
+      enabled: false
+      target_modules: []
+      exclude_modules: []
+      match_all_linear: false
+      dim: 16
+      alpha: 32
+      dropout: 0.05
+      dropout_position: post
+      lora_A_init: xavier
+      use_triton: false
+
+data:
+  add_generation_prompt: false
+  shuffle: true
+  train:
+    dataset_name: openai_format
+    data_path: data/moonlight_c4_sft/train.jsonl
+    chat_key: messages
+    system_key: null
+    system_prompt: null
+    tool_key: tools
+    use_preserving_dataset: false
+  validation:
+    dataset_name: openai_format
+    data_path: data/moonlight_c4_sft/val.jsonl
+    chat_key: messages
+    system_key: null
+    system_prompt: null
+    tool_key: tools
+    use_preserving_dataset: false
+
+logger:
+  # Ray GPU scrape fails in some worker/driver timings ("Ray is not initialized"); use nvidia-smi instead.
+  monitor_gpus: false
+  wandb:
+    name: sft-moonlight-c4-webtext-openai
+  tensorboard:
+    log_dir: tb_logs-sft-moonlight-c4-webtext
+
+cluster:
+  gpus_per_node: 8
+  num_nodes: 1

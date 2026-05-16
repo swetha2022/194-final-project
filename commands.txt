@@ -1,0 +1,140 @@
+python3 weight_change_analysis/compute_per_tensor_norm_variance.py \
+    --csvs weight_change_analysis_output/per_tensor_norms/*.csv \
+    -o weight_change_analysis_output/per_tensor_norm_variance.csv
+
+python3 weight_change_analysis/compare_lora_vs_fullft_variance.py \
+    --variance-csv weight_change_analysis_output/per_tensor_norm_variance.csv \
+    --format markdown --exclude-types embed,router \
+    -o weight_change_analysis_output/per_tensor_norm_variance_tables.md
+
+python3 weight_change_analysis/compare_lora_vs_fullft_variance.py \
+    --variance-csv weight_change_analysis_output/per_tensor_norm_variance.csv \
+    --format latex --exclude-types embed,router \
+    -o weight_change_analysis_output/per_tensor_norm_variance_tables.tex
+
+python3 weight_change_analysis/plot_per_tensor_scatter.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_muon.csv \
+    --labels 'Adam pre / AdamW LoRA' 'Adam pre / Muon LoRA' \
+    --facet type --exclude-types embed,router \
+    --x-norm rms --y-norm l_inf \
+    --title 'LoRA finetuning from Adam Pretraining: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_adam_pre_lora_l_inf_vs_rms_by_type.png
+
+python3 weight_change_analysis/plot_per_tensor_scatter.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_fullft_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_fullft_muon.csv \
+    --labels 'Adam pre / AdamW' 'Adam pre / Muon' \
+    --facet type --exclude-types embed,router \
+    --x-norm rms --y-norm l_inf \
+    --title 'Full finetuning from Adam Pretraining: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_adam_pre_l_inf_vs_rms_by_type.png
+
+python3 weight_change_analysis/plot_per_tensor_scatter.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_muon.csv \
+    --labels 'Muon pre / AdamW LoRA' 'Muon pre / Muon LoRA' \
+    --facet type --exclude-types embed,router \
+    --x-norm rms --y-norm l_inf \
+    --title 'LoRA finetuning from Muon Pretraining: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_muon_pre_lora_l_inf_vs_rms_by_type.png
+
+python3 weight_change_analysis/plot_per_tensor_scatter.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_fullft_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_fullft_muon.csv \
+    --labels 'Muon pre / AdamW' 'Muon pre / Muon' \
+    --facet type --exclude-types embed,router \
+    --x-norm rms --y-norm l_inf \
+    --title 'Full finetuning from Muon Pretraining: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_muon_pre_l_inf_vs_rms_by_type.png
+
+
+
+
+python3 weight_change_analysis/plot_per_tensor_scatter_interactive.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_muon.csv \
+    --labels 'Adam pre / AdamW LoRA' 'Adam pre / Muon LoRA' \
+    --x-norm rms --y-norm l_inf \
+    --title 'LoRA finetuning from Adam Pretraining: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_adam_pre_lora_l_inf_vs_rms.html
+
+python3 weight_change_analysis/plot_per_tensor_scatter_interactive.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_fullft_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_fullft_muon.csv \
+    --labels 'Adam pre / AdamW' 'Adam pre / Muon' \
+    --x-norm rms --y-norm l_inf \
+    --title 'Full finetuning from Adam Pretraining: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_adam_pre_l_inf_vs_rms.html
+
+python3 weight_change_analysis/plot_per_tensor_scatter_interactive.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_muon.csv \
+    --labels 'Muon pre / AdamW LoRA' 'Muon pre / Muon LoRA' \
+    --x-norm rms --y-norm l_inf \
+    --title 'LoRA finetuning from Muon Pretraining: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_muon_pre_lora_l_inf_vs_rms.html
+
+python3 weight_change_analysis/plot_per_tensor_scatter_interactive.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_fullft_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_fullft_muon.csv \
+    --labels 'Muon pre / AdamW' 'Muon pre / Muon' \
+    --x-norm rms --y-norm l_inf \
+    --title 'Full finetuning from Muon Pretraining: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_muon_pre_l_inf_vs_rms.html
+
+python3 weight_change_analysis/plot_per_tensor_scatter_interactive.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_muon.csv \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_muon.csv \
+    --labels 'Adam pre / AdamW LoRA' 'Adam pre / Muon LoRA' \
+             'Muon pre / AdamW LoRA' 'Muon pre / Muon LoRA' \
+    --x-norm rms --y-norm l_inf \
+    --title 'LoRA finetuning: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_lora_l_inf_vs_rms.html
+
+python3 weight_change_analysis/plot_per_tensor_scatter_interactive.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_fullft_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_fullft_muon.csv \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_fullft_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_fullft_muon.csv \
+    --labels 'Adam pre / AdamW Full FT' 'Adam pre / Muon Full FT' \
+             'Muon pre / AdamW Full FT' 'Muon pre / Muon Full FT' \
+    --x-norm rms --y-norm l_inf \
+    --title 'Full finetuning: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_fullft_l_inf_vs_rms.html
+
+python3 weight_change_analysis/plot_per_tensor_scatter_interactive.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_fullft_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_fullft_muon.csv \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/adam_ckpt_driving_muon.csv \
+    --labels 'Adam pre / AdamW Full FT' 'Adam pre / Muon Full FT' \
+             'Adam pre / AdamW LoRA FT' 'Adam pre / Muon LoRA FT' \
+    --x-norm rms --y-norm l_inf \
+    --title 'Full and LoRA finetuning from Adam Pretraining: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_adam_pre_l_inf_vs_rms.html
+
+python3 weight_change_analysis/plot_per_tensor_scatter_interactive.py \
+    --csvs \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_fullft_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_fullft_muon.csv \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_adamw.csv \
+      weight_change_analysis_output/per_tensor_norms/muon_ckpt_driving_muon.csv \
+    --labels 'Muon pre / AdamW Full FT' 'Muon pre / Muon Full FT' \
+             'Muon pre / AdamW LoRA FT' 'Muon pre / Muon LoRA FT' \
+    --x-norm rms --y-norm l_inf \
+    --title 'Full and LoRA finetuning from Muon Pretraining: per-tensor weight changes ($\|\Delta W\|_\infty$ vs $\|\Delta W\|_{RMS\rightarrow RMS}$)' \
+    -o weight_change_analysis_output/per_tensor_scatter_muon_pre_l_inf_vs_rms.html

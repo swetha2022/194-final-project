@@ -108,3 +108,44 @@ def global_max_rms_induced_for_tensor(
     if dev.type == "cuda":
         delta = delta.to(dev)
     return rms_rms_induced_2d(delta)
+
+
+def per_tensor_norms(
+    base: torch.Tensor,
+    ft: torch.Tensor,
+    chunk_elems: int = 4_000_000,
+    spectral_device: torch.device | None = None,
+) -> Tuple[float, float, float]:
+    """
+    Per-tensor delta norms for one (base, finetuned) pair of identical shape:
+      - l_inf: max(|Δ|)
+      - l2:    Frobenius norm sqrt(Σ Δ²)
+      - rms_rms_induced: rms→rms induced norm if 2D, else NaN
+
+    The l_inf / l2 pass is chunked over a flat view to avoid materializing the
+    full delta for large tensors.
+    """
+    if base.shape != ft.shape:
+        raise ValueError(
+            f"shape mismatch: base {tuple(base.shape)} vs ft {tuple(ft.shape)}"
+        )
+    flat_b = base.reshape(-1)
+    flat_f = ft.reshape(-1)
+    n = flat_b.numel()
+    sq_sum = 0.0
+    linf = 0.0
+    i = 0
+    while i < n:
+        j = min(n, i + chunk_elems)
+        delta = flat_f[i:j].float() - flat_b[i:j].float()
+        sq_sum += float(delta.pow(2).sum().item())
+        linf = max(linf, float(delta.abs().max().item()))
+        i = j
+    l2 = math.sqrt(sq_sum) if sq_sum > 0 else 0.0
+
+    if base.ndim == 2:
+        rms = global_max_rms_induced_for_tensor(base, ft, spectral_device)
+    else:
+        rms = float("nan")
+
+    return linf, l2, rms
